@@ -1,5 +1,5 @@
-const CACHE = 'sb-shell-v2';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const CACHE = 'sb-shell-v4';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192-v2.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -14,11 +14,12 @@ self.addEventListener('activate', e => {
 
 function idb() {
   return new Promise((res, rej) => {
-    const r = indexedDB.open('secondbrain-v1', 1);
+    const r = indexedDB.open('secondbrain-v1', 2);
     r.onupgradeneeded = e => {
       const d = e.target.result;
       if (!d.objectStoreNames.contains('items')) d.createObjectStore('items', { keyPath: 'id' });
       if (!d.objectStoreNames.contains('areas')) d.createObjectStore('areas', { keyPath: 'n' });
+      if (!d.objectStoreNames.contains('tags')) d.createObjectStore('tags', { keyPath: 'n' });
       if (!d.objectStoreNames.contains('pending')) d.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
     };
     r.onsuccess = () => res(r.result);
