@@ -1,4 +1,4 @@
-const CACHE = 'sb-shell-v9';
+const CACHE = 'sb-shell-v10';
 const SHELL = ['./', './index.html'];
 
 self.addEventListener('install', e => {
@@ -53,8 +53,6 @@ async function handleShare(req) {
   return Response.redirect('./?share=1', 303);
 }
 
-// Rete prima, cache solo come rete di salvataggio: così ogni aggiornamento
-// caricato su GitHub arriva subito, manifest e icone comprese.
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method === 'POST' && url.pathname.endsWith('/share')) {
