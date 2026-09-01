@@ -26,7 +26,7 @@ header{background:linear-gradient(135deg,var(--ac) 0%,var(--ac2) 100%);color:#ff
 .sum span{display:block;font-size:12px;color:var(--mut)}
 .sum b{font-size:19px;font-weight:600}
 .sum .ev b{color:var(--ac)}
-main{flex:1;overflow-y:auto;padding:16px 16px 84px;-webkit-overflow-scrolling:touch}
+main{flex:1;overflow-y:auto;padding:16px 16px 104px;-webkit-overflow-scrolling:touch}
 .hsearch{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.95);border-radius:99px;padding:13px 16px;flex:1;min-width:0}
 .hsearch svg{width:19px;height:19px;color:var(--ac);flex-shrink:0}
 .hsearch input{border:0;outline:0;font:inherit;font-size:16px;flex:1;background:transparent;min-width:0;color:var(--ink)}
@@ -89,12 +89,10 @@ mark{background:#F6E7A2;color:var(--ink);border-radius:3px}
 .empty .ic{width:74px;height:74px;border-radius:50%;background:var(--acs);color:var(--ac);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
 .empty .ic svg{width:28px;height:28px}
 .empty b{display:block;font-weight:600;color:var(--ink);margin-bottom:4px;font-size:16px}
-.capbar{display:flex;align-items:center;gap:8px;background:var(--card);border-top:1px solid var(--line);padding:10px 12px;flex-shrink:0}
-.capbar input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:99px;padding:13px 16px;font:inherit;font-size:16px;color:var(--ink);outline:0}
-.capbar input:focus{border-color:var(--ac);background:var(--card)}
-.capbar button{width:46px;height:46px;border-radius:50%;border:0;background:var(--bg);color:var(--mut);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.capbar button svg{width:20px;height:20px}
-.capbar button.go{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff}
+.fab{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(83,74,183,.38);cursor:pointer;z-index:15}
+.fab svg{width:25px;height:25px;stroke-width:2.4}
+.mosaico{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px}
+.mosaico img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0}
 nav{display:flex;background:var(--card);border-top:1px solid var(--line);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}
 nav button{flex:1;background:0;border:0;padding:10px 0 12px;font:inherit;font-size:11px;color:var(--fnt);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
 nav button svg{width:22px;height:22px}
@@ -146,15 +144,11 @@ audio{width:100%;margin-bottom:14px}
 <body>
 <header id="hdr"></header>
 <main id="main"></main>
-<div class="capbar" id="capbar">
- <input id="qk" placeholder="Aggiungi al second brain…" autocomplete="off">
- <button id="qkfoto" onclick="pickPhoto()" aria-label="Foto"></button>
- <button id="qkvoce" onclick="recorder()" aria-label="Vocale"></button>
-</div>
+<button class="fab" onclick="menuNuovo()" aria-label="Aggiungi"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 <nav id="nav"></nav>
 <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
 <div class="toast" id="toast"></div>
-<input type="file" id="fpick" accept="image/*" style="display:none">
+<input type="file" id="fpick" accept="image/*" multiple style="display:none">
 <script>
 const DBN='secondbrain-v1';
 let _db=null;
@@ -337,7 +331,6 @@ function render(){
    +'<button class="ghost" onclick="aggiorna()">Forza aggiornamento app</button>';
  }
  bindGesti();selBar();
- const cb=$('capbar');if(cb)cb.style.display=(tab==='voci'&&!selMode)?'':'none';
 }
 let REC=[];
 try{REC=JSON.parse(localStorage.getItem('sb-recenti')||'[]')}catch(e){REC=[]}
@@ -368,25 +361,6 @@ function soloLista(){
  const r=results();
  b.innerHTML=(q.trim()?'<div class="day">'+r.length+(r.length===1?' risultato':' risultati')+'</div>':'')+lista(r);
  bindGesti();
-}
-function capbarInit(){
- const inp=$('qk');
- $('qkfoto').innerHTML=I.foto;$('qkvoce').innerHTML=I.vocale;
- inp.oninput=function(){aggiornaCapbar()};
- inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();apriDaBarra()}};
- aggiornaCapbar();
-}
-function aggiornaCapbar(){
- const v=$('qk').value.trim(),f=$('qkfoto'),c=$('qkvoce');
- if(v){f.style.display='none';c.classList.add('go');c.innerHTML=I.inv;c.onclick=apriDaBarra;c.setAttribute('aria-label','Continua')}
- else{f.style.display='';c.classList.remove('go');c.innerHTML=I.vocale;c.onclick=recorder;c.setAttribute('aria-label','Vocale')}
-}
-function apriDaBarra(){
- const v=$('qk').value.trim();if(!v)return;
- const m=v.match(/https?:\/\/\S+/);
- if(m)cap({t:'link',s:m[0],ti:v.replace(m[0],'').trim()});
- else cap({t:'nota',ti:v});
- $('qk').value='';aggiornaCapbar();
 }
 function go(t){tab=t;area='';q='';fTag='';fTipo='';sel=[];selMode=false;edit=false;render();$('main').scrollTop=0}
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)}
@@ -443,6 +417,13 @@ function det(id){const i=D.find(x=>x.id===id);if(!i)return;
  +'<button class="ghost" onclick="close_()">Chiudi</button>')}
 function editItem(id){const i=D.find(x=>x.id===id);C=Object.assign({},i,{typed:'',editing:true});
  if(C.blob)C.tmp=oUrl(i);drawCap()}
+function menuNuovo(){
+ sheet('<h3>Aggiungi</h3><div class="menu">'
+ +'<button onclick="pasteLink()"><span class="ic">'+I.link+'</span>Link</button>'
+ +'<button onclick="recorder()"><span class="ic">'+I.vocale+'</span>Vocale</button>'
+ +'<button onclick="cap({t:\'nota\'})"><span class="ic">'+I.nota+'</span>Appunto</button>'
+ +'<button onclick="pickPhoto()"><span class="ic">'+I.foto+'</span>Foto <span style="font-weight:400;color:var(--mut);font-size:13px">&nbsp;anche più di una</span></button></div>'
+ +'<button class="ghost" onclick="close_()">Annulla</button>')}
 async function pasteLink(){
  let v='';try{v=await navigator.clipboard.readText()}catch(e){}
  const m=(v||'').match(/https?:\/\/\S+/);
@@ -450,8 +431,62 @@ async function pasteLink(){
  setTimeout(()=>{const u=$('ur');if(u&&!u.value)u.focus()},150);
 }
 function pickPhoto(){$('fpick').click()}
-$('fpick').onchange=async e=>{const f=e.target.files[0];e.target.value='';
- if(f)cap({t:'foto',blob:await shrink(f),mini:await shrink(f,320)})};
+$('fpick').onchange=async e=>{
+ const fs=Array.prototype.slice.call(e.target.files);e.target.value='';
+ if(!fs.length)return;
+ if(fs.length===1){const f=fs[0];cap({t:'foto',blob:await shrink(f),mini:await shrink(f,320)});return}
+ toast(fs.length+' foto in preparazione…');
+ LOTTO=[];
+ for(const f of fs)LOTTO.push({blob:await shrink(f),mini:await shrink(f,320)});
+ drawLotto();
+};
+let LOTTO=[],LTAG=[],LTYPED='';
+function drawLotto(){
+ const urlsTmp=LOTTO.slice(0,12).map(x=>URL.createObjectURL(x.mini||x.blob));
+ sheet('<h3>'+LOTTO.length+' foto</h3>'
+ +'<div class="mosaico">'+urlsTmp.map(u=>'<img src="'+u+'" alt="">').join('')+(LOTTO.length>12?'<div style="align-self:center;color:var(--mut);font-size:13px;padding:0 8px">+'+(LOTTO.length-12)+'</div>':'')+'</div>'
+ +'<p class="fl">Descrizione comune</p><textarea id="lds" rows="2" placeholder="Es. Fiera Colonia, stand"></textarea>'
+ +'<p class="fl" style="margin-top:14px">Tag per tutte</p>'
+ +'<div class="tagbox"><div class="sel" id="lselbox">'+lselHTML()+'</div>'
+ +'<input id="lti" placeholder="cerca o crea un tag" autocomplete="off" autocapitalize="none"></div>'
+ +'<div id="lsugbox">'+lsugHTML()+'</div>'
+ +'<div class="row"><div><p class="fl">Area</p><select id="lar"><option value="">nessuna</option>'
+ +AN().map(a=>'<option '+(area===a?'selected':'')+'>'+esc(a)+'</option>').join('')+'</select></div>'
+ +'<div><p class="fl">Data</p><input class="tx" id="ldt" type="date" value="'+today()+'"></div></div>'
+ +'<button class="save" onclick="salvaLotto()">Salva le '+LOTTO.length+' foto</button>'
+ +'<button class="ghost" onclick="LOTTO=[];LTAG=[];close_()">Annulla</button>');
+ const ti=$('lti');
+ ti.oninput=function(){LTYPED=ti.value.toLowerCase();$('lsugbox').innerHTML=lsugHTML()};
+ ti.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();if(ti.value.trim())laddtag(ti.value.trim())}};
+}
+function lselHTML(){return LTAG.map(t=>'<button class="chip on" onclick="luntag(\''+esc(t)+'\')"><i style="background:'+TC(t)+'"></i>'+esc(t)+' ✕</button>').join('')}
+function lsugHTML(){
+ const w=LTYPED.trim();
+ const l=suggest('', '',w).filter(t=>LTAG.indexOf(t)<0);
+ let h=l.map(t=>'<button class="chip" onclick="laddtag(\''+esc(t)+'\')"><i style="background:'+TC(t)+'"></i>'+esc(t)+'</button>').join('');
+ if(w&&l.indexOf(w)<0)h+='<button class="chip" style="border-style:dashed;color:var(--ac)" onclick="laddtag(\''+esc(w)+'\')">+ crea «'+esc(w)+'»</button>';
+ if(!h)h='<span style="font-size:13.5px;color:var(--fnt)">Nessun tag. Scrivine uno per crearlo.</span>';
+ return '<div class="chips sugwrap">'+h+'</div>';
+}
+async function laddtag(t){
+ t=t.toLowerCase().trim();if(!t)return;
+ if(LTAG.indexOf(t)<0)LTAG.push(t);
+ LTYPED='';const ti=$('lti');if(ti){ti.value='';ti.focus()}
+ $('lselbox').innerHTML=lselHTML();$('lsugbox').innerHTML=lsugHTML();
+ if(TN().indexOf(t)<0){const o={n:t,c:'viola'};try{await put('tags',o);TAGS.push(o);TAGS.sort((a,b)=>a.n.localeCompare(b.n))}catch(e){}}
+}
+function luntag(t){LTAG=LTAG.filter(x=>x!==t);$('lselbox').innerHTML=lselHTML();$('lsugbox').innerHTML=lsugHTML()}
+async function salvaLotto(){
+ const base=$('lds').value.trim(),a=$('lar').value,d=$('ldt').value||today();
+ const n=LOTTO.length;
+ for(let k=0;k<n;k++){
+  const it={id:Date.now()+k,t:'foto',ti:base?(n>1?base+' ('+(k+1)+'/'+n+')':base):'Foto',
+   tg:LTAG.slice(),a:a,s:'',d:d,blob:LOTTO[k].blob,mini:LOTTO[k].mini,dur:''};
+  await put('items',it);D.push(it);
+ }
+ LOTTO=[];LTAG=[];LTYPED='';
+ close_();tab='voci';q='';fTag='';fTipo='';if(a)area=a;render();toast(n+' foto salvate');
+}
 async function shrink(file,max){
  max=max||1600;
  try{const b=await createImageBitmap(file);const sc=Math.min(1,max/Math.max(b.width,b.height));
@@ -624,7 +659,7 @@ async function boot(){
  catch(e){$('main').innerHTML='<div class="empty"><b>Archivio non accessibile</b>Controlla di non essere in navigazione privata.</div>';return}
  if(!AREE.length){AREE=[{n:'Lavoro',c:'blu'},{n:'Casa',c:'ambra'},{n:'Idee',c:'verde'}];for(const a of AREE)await put('areas',a)}
  TAGS=TAGS.map(t=>typeof t==='string'?{n:t,c:'viola'}:(t.c?t:{n:t.n,c:'viola'})).sort((a,b)=>a.n.localeCompare(b.n));
- render();capbarInit();
+ render();
  await checkPending();
  if(location.search)history.replaceState({},'',location.pathname);
  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
