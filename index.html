@@ -74,11 +74,29 @@ mark{background:#F6E7A2;color:var(--ink);border-radius:3px}
 .ib svg{width:17px;height:17px}
 .ib.dl{color:var(--dan);background:#FBECEE}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.area{border-radius:var(--r);padding:16px;cursor:pointer;min-height:94px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
-.area p{margin:0;font-size:16px;font-weight:600;line-height:1.2}
-.area .n{font-size:13px;opacity:.75}
-.area .pen{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center}
+.area{border-radius:18px;padding:15px;cursor:pointer;min-height:112px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;color:#fff}
+.area .filigrana{position:absolute;right:-14px;bottom:-18px;opacity:.16;pointer-events:none}
+.area .filigrana svg{width:74px;height:74px;stroke-width:1.6}
+.area .aico{position:relative}
+.area .aico svg{width:22px;height:22px;color:rgba(255,255,255,.92)}
+.area .abot{position:relative}
+.area .abot b{display:block;font-size:16px;font-weight:600}
+.area .abot span{display:block;font-size:12.5px;opacity:.85}
+.area .pen{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.9);color:var(--ink);display:flex;align-items:center;justify-content:center;z-index:2}
 .area .pen svg{width:13px;height:13px}
+.tessera{display:flex;align-items:center;gap:12px;border-radius:16px;padding:14px;position:relative;overflow:hidden;color:#fff;margin-bottom:16px}
+.tessera .filigrana{position:absolute;right:-12px;bottom:-20px;opacity:.14;pointer-events:none}
+.tessera .filigrana svg{width:82px;height:82px}
+.tessera .q{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.tessera .q svg{width:21px;height:21px}
+.tessera .tx{flex:1;min-width:0;position:relative}
+.tessera .tx b{display:block;font-size:16px;font-weight:600}
+.tessera .tx span{display:block;font-size:12.5px;opacity:.86}
+.tessera button{background:rgba(255,255,255,.22);border:0;color:#fff;border-radius:99px;padding:9px 15px;font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;position:relative;flex-shrink:0}
+.icone{display:flex;flex-wrap:wrap;gap:8px;max-height:150px;overflow-y:auto}
+.icone button{width:40px;height:40px;border-radius:11px;border:0;background:var(--bg);color:var(--mut);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.icone button svg{width:19px;height:19px}
+.icone button.on{color:#fff}
 .area.add{background:0;border:1.5px dashed #CFCDDA;color:var(--mut);align-items:center;justify-content:center}
 .area.add svg{width:20px;height:20px;margin-bottom:6px}
 .area.add p{font-size:14px;font-weight:500;color:var(--mut)}
@@ -118,13 +136,15 @@ textarea:focus,input.tx:focus{border-color:var(--ac);background:var(--card)}
 .dup p{margin:0;font-size:13.5px;color:#8A5312}
 .dup a{color:#8A5312;font-weight:600;text-decoration:underline;cursor:pointer}
 .warn{font-size:13px;color:#8A5312;margin:9px 0 0}
+.proposta{display:flex;gap:8px;align-items:flex-start;background:var(--acs);color:var(--ac);border-radius:10px;padding:10px 12px;font-size:13px;margin:0 0 14px}
+.proposta svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
 .row{display:flex;gap:10px;margin-top:14px}
 .row>div{flex:1}
 .sw{display:flex;gap:10px;flex-wrap:wrap}
 .sw button{width:42px;height:42px;border-radius:12px;border:2.5px solid transparent;cursor:pointer;padding:0}
 .sw button.on{border-color:var(--ink)}
-.sw button.usato{position:relative}
-.sw button.usato:after{content:"";position:absolute;right:3px;bottom:3px;width:8px;height:8px;border-radius:50%;background:#fff;border:2px solid rgba(0,0,0,.35)}
+.sw button.bloccato{opacity:.28;cursor:not-allowed;position:relative}
+.sw button.bloccato:after{content:"";position:absolute;left:8px;top:19px;width:24px;height:2.5px;background:#fff;transform:rotate(-45deg);border-radius:2px}
 .sw{max-height:150px;overflow-y:auto}
 .save{width:100%;background:var(--ac);color:#fff;border:0;border-radius:12px;padding:15px;font:inherit;font-weight:600;font-size:15px;margin-top:18px;cursor:pointer}
 .save.dl{background:var(--dan)}
@@ -215,11 +235,34 @@ const I={
  play:'<svg viewBox="0 0 24 24"><path d="M7 4.5l13 7.5-13 7.5z" fill="currentColor" stroke="none"/></svg>',
  pausa:'<svg viewBox="0 0 24 24"><rect x="6.5" y="5" width="4" height="14" rx="1.5" fill="currentColor" stroke="none"/><rect x="13.5" y="5" width="4" height="14" rx="1.5" fill="currentColor" stroke="none"/></svg>',
  espandi:'<svg viewBox="0 0 24 24"><path d="M9 4H4v5M15 4h5v5M15 20h5v-5M9 20H4v-5"/></svg>',
+ stella:'<svg viewBox="0 0 24 24"><path d="M12 4l2.4 5 5.6.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.6-.8z"/></svg>',
  yt:'<svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="currentColor" stroke="none"/><path d="M10 9.5l5.5 3-5.5 3z" fill="#fff" stroke="none"/></svg>',
  ig:'<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.3" fill="currentColor" stroke="none"/></svg>',
  fb:'<svg viewBox="0 0 24 24"><path d="M14.5 8.5h2.5V5h-2.6C12 5 10.8 6.6 10.8 8.8v1.9H8.5v3.5h2.3V21h3.7v-6.8h2.5l.5-3.5h-3v-1.4c0-.5.3-.8 1-.8z" fill="currentColor" stroke="none"/></svg>',
  tt:'<svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5" /><path d="M14 6.5c1 1.6 2.6 2.6 4.5 2.7"/></svg>',
  li:'<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.6v.1M12 16v-3.2a2 2 0 0 1 4 0V16"/></svg>'};
+const AICO={
+ cartella:'<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+ valigetta:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>',
+ casa:'<svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M10 20v-6h4v6"/></svg>',
+ lampadina:'<svg viewBox="0 0 24 24"><path d="M9.5 18h5M10 21h4M12 3a6 6 0 0 1 3.5 10.9V16h-7v-2.1A6 6 0 0 1 12 3z"/></svg>',
+ palestra:'<svg viewBox="0 0 24 24"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/></svg>',
+ aereo:'<svg viewBox="0 0 24 24"><path d="M10 3h2l2 7h6a1.5 1.5 0 0 1 0 3h-6l-2 8h-2l1-8H6l-2 2H3l1.5-3.5L3 8h1l2 2h5z"/></svg>',
+ attrezzi:'<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0 5 5L15 16l-3-3z"/><path d="M4 20l6-6"/></svg>',
+ carrello:'<svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M3 4h2l2.6 11h11L21 8H6"/></svg>',
+ cuore:'<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9z"/></svg>',
+ libro:'<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>',
+ musica:'<svg viewBox="0 0 24 24"><circle cx="7" cy="18" r="2.5"/><circle cx="18" cy="16" r="2.5"/><path d="M9.5 18V7l11-2v11"/></svg>',
+ auto:'<svg viewBox="0 0 24 24"><path d="M4 16v-3l2-5h12l2 5v3"/><rect x="3" y="13" width="18" height="5" rx="1.5"/><path d="M7 18v2M17 18v2"/></svg>',
+ fotocamera:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M9 7l1.5-2h3L15 7"/></svg>',
+ pianta:'<svg viewBox="0 0 24 24"><path d="M12 21v-8M12 13c0-4 3-6 7-6 0 4-3 6-7 6zM12 15c0-3-2.5-5-6-5 0 3 2.5 5 6 5z"/></svg>',
+ stella:'<svg viewBox="0 0 24 24"><path d="M12 4l2.4 5 5.6.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.6-.8z"/></svg>',
+ fuoco:'<svg viewBox="0 0 24 24"><path d="M12 3s5 4 5 9a5 5 0 0 1-10 0c0-2 1-3 1-3s.5 2 2 2c0-3 2-5 2-8z"/></svg>',
+ cibo:'<svg viewBox="0 0 24 24"><path d="M5 3v8a3 3 0 0 0 6 0V3M8 11v10M17 3c-1.5 2-2 4-2 6h4c0-2-.5-4-2-6zM17 9v12"/></svg>',
+ soldi:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>',
+ gente:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 5.5a3 3 0 0 1 0 5.8M17 20a6 6 0 0 0-2-4.4"/></svg>',
+ calendario:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>'};
+const AI=k=>AICO[k]||AICO.cartella;
 const COL={viola:'#6C63D6',indaco:'#4F46E5',blu:'#3B82F6',cielo:'#0EA5E9',menta:'#14B8A6',verde:'#22C55E',oliva:'#84CC16',lime:'#65A30D',
  ambra:'#F59E0B',arancio:'#F97316',mattone:'#C2410C',rosso:'#EF4444',rosa:'#EC4899',magenta:'#DB2777',lilla:'#A855F7',prugna:'#7E22CE',
  sabbia:'#A8763E',ardesia:'#64748B',grigio:'#8B8A94',carbone:'#44403C'};
@@ -337,7 +380,8 @@ function render(){
   const r=results();
   const tipi=[['','Tutti'],['link','Link'],['foto','Foto'],['nota','Note'],['vocale','Vocali']];
   const usati=TN().filter(t=>conta(t));
-  m.innerHTML='<div id="filtri" style="'+(q.trim()?'display:none':'')+'">'
+  m.innerHTML=(area?tesseraArea():'')
+   +'<div id="filtri" style="'+(q.trim()?'display:none':'')+'">'
    +'<div class="seg">'+tipi.map(x=>'<button class="'+(fTipo===x[0]?'on':'')+'" onclick="fTipo=\''+x[0]+'\';render()">'+x[1]+'</button>').join('')+'</div>'
    +'<div class="chips riga"><button class="chip '+(fTag===''?'on':'')+'" onclick="fTag=\'\';render()">Tutti</button>'
    +usati.map(t=>'<button class="chip '+(fTag===t?'on':'')+'" onclick="fTag=\''+esc(t)+'\';render()"><i style="background:'+TC(t)+'"></i>'+esc(t)+'</button>').join('')
@@ -351,10 +395,12 @@ function render(){
  else if(tab==='aree'){
   m.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:13px;color:var(--mut)">Tocca per vedere le voci</span>'
    +'<button style="background:0;border:0;color:var(--ac);font:inherit;font-size:14px;font-weight:500" onclick="edit=!edit;render()">'+(edit?'Fine':'Modifica')+'</button></div>'
-   +'<div class="grid">'+AREE.map(a=>{const c=COL[a.c];
-   return '<div class="area '+(edit?'wig':'')+'" style="background:'+soft(c)+'" onclick="'+(edit?'editArea(\''+esc(a.n)+'\')':'area=\''+esc(a.n)+'\';tab=\'voci\';render()')+'">'
-    +(edit?'<span class="pen" style="color:'+c+'">'+I.pen+'</span>':'')
-    +'<p style="color:'+c+'">'+esc(a.n)+'</p><span class="n" style="color:'+c+'">'+D.filter(i=>i.a===a.n).length+' voci</span></div>'}).join('')
+   +'<div class="grid">'+AREE.map(a=>{const c=COL[a.c],n=D.filter(i=>i.a===a.n).length;
+   return '<div class="area '+(edit?'wig':'')+'" style="background:'+c+'" onclick="'+(edit?'editArea(\''+esc(a.n)+'\')':'area=\''+esc(a.n)+'\';tab=\'voci\';render()')+'">'
+    +'<span class="filigrana">'+AI(a.ic)+'</span>'
+    +(edit?'<span class="pen">'+I.pen+'</span>':'')
+    +'<span class="aico">'+AI(a.ic)+'</span>'
+    +'<span class="abot"><b>'+esc(a.n)+'</b><span>'+n+(n===1?' voce':' voci')+'</span></span></div>'}).join('')
    +'<div class="area add" onclick="newArea()">'+I.piu+'<p>Nuova area</p></div></div>';
  }
  else if(tab==='tag'){
@@ -396,6 +442,16 @@ function recentiHTML(){
  return '<div class="recenti"><div class="t">Ricerche recenti</div><div class="chips riga">'
   +REC.map(v=>'<button class="chip" onclick="usaRicerca(\''+esc(v).replace(/'/g,"&#39;")+'\')">'+I.sea+esc(v)+'</button>').join('')
   +'<button class="chip" onclick="scordaRicerche()" style="color:var(--mut)">Svuota</button></div></div>';
+}
+function tesseraArea(){
+ const a=AREE.find(x=>x.n===area);if(!a)return '';
+ const n=D.filter(i=>i.a===area).length;
+ const tg=new Set();D.forEach(i=>{if(i.a===area)i.tg.forEach(t=>tg.add(t))});
+ return '<div class="tessera" style="background:'+COL[a.c]+'">'
+  +'<span class="filigrana">'+AI(a.ic)+'</span>'
+  +'<span class="q">'+AI(a.ic)+'</span>'
+  +'<span class="tx"><b>'+esc(a.n)+'</b><span>'+n+(n===1?' voce':' voci')+' · '+tg.size+(tg.size===1?' tag':' tag')+'</span></span>'
+  +'<button onclick="editArea(\''+esc(a.n)+'\')">Modifica</button></div>';
 }
 function avvisoHTML(){
  if(q.trim()||area||fTag||fTipo)return '';
@@ -599,10 +655,28 @@ async function recorder(){
  recT=setInterval(()=>{recS++;const e=$('tm');if(e)e.textContent=Math.floor(recS/60)+':'+String(recS%60).padStart(2,'0')},1000);
 }
 function stopRec(){if(recT){clearInterval(recT);recT=null}if(mediaRec&&mediaRec.state==='recording')mediaRec.stop()}
+function fonte(o){
+ if(o.t==='link')return 'dom:'+dom(o.s||'');
+ return 'tipo:'+o.t;
+}
+function proposta(o){
+ const f=fonte(o),simili=D.filter(i=>fonte(i)===f).sort((a,b)=>b.id-a.id).slice(0,8);
+ if(!simili.length)return null;
+ const ca={},ct={};
+ simili.forEach(i=>{if(i.a)ca[i.a]=(ca[i.a]||0)+1;i.tg.forEach(t=>ct[t]=(ct[t]||0)+1)});
+ const a=Object.entries(ca).sort((x,y)=>y[1]-x[1])[0];
+ const tg=Object.entries(ct).filter(e=>e[1]>=Math.max(2,Math.ceil(simili.length/2))).sort((x,y)=>y[1]-x[1]).slice(0,2).map(e=>e[0]);
+ if(!a&&!tg.length)return null;
+ return {a:a&&a[1]>=2?a[0]:'',tg:tg};
+}
 function cap(o){
  if(C&&C.tmp){URL.revokeObjectURL(C.tmp);C.tmp=null}
  C=Object.assign({t:'nota',ti:'',tg:[],a:area||'',s:'',typed:''},o);
- if(C.blob&&!C.tmp)C.tmp=URL.createObjectURL(C.blob);drawCap();setTimeout(()=>{const d=$('ds');if(d&&C.t!=='link')d.focus()},140)}
+ if(C.blob&&!C.tmp)C.tmp=URL.createObjectURL(C.blob);
+ if(!C.editing){
+  const p=proposta(C);
+  if(p){if(!C.a&&p.a)C.a=p.a;if(!C.tg.length&&p.tg.length){C.tg=p.tg.slice();C.auto=true}}
+ }drawCap();setTimeout(()=>{const d=$('ds');if(d&&C.t!=='link')d.focus()},140)}
 function drawCap(){
  const o=C,nomi={link:'Nuovo link',foto:'Nuova foto',nota:'Nuovo appunto',vocale:'Vocale registrato'};
  sheet('<h3>'+(o.editing?'Modifica':nomi[o.t])+'</h3>'
@@ -610,21 +684,30 @@ function drawCap(){
  +(o.t==='foto'&&o.tmp?'<img class="prev" src="'+o.tmp+'" alt="">':'')
  +(o.t==='vocale'&&o.tmp?'<audio controls src="'+o.tmp+'"></audio>':'')
  +(o.t==='link'?'<p class="fl">Indirizzo</p><input class="tx" id="ur" value="'+esc(o.s||'')+'" placeholder="https://" inputmode="url" oninput="C.s=this.value;refreshDup()" style="margin-bottom:14px">':'')
+ +(o.auto?'<p class="proposta">'+I.stella+'Ho ripreso area e tag da quello che salvi di solito da qui. Cambiali se serve.</p>':'')
  +'<p class="fl">Descrizione</p><textarea id="ds" rows="2" placeholder="Perché lo stai salvando">'+esc(o.ti||'')+'</textarea>'
  +'<p class="fl" style="margin-top:14px">Tag</p>'
  +'<div class="tagbox"><div class="sel" id="selbox">'+selHTML()+'</div>'
  +'<input id="ti" placeholder="cerca o crea un tag" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'
  +'<div id="sugbox">'+sugHTML()+'</div>'
- +'<div class="row"><div><p class="fl">Area</p><select id="ar" onchange="C.a=this.value;refreshSug()"><option value="">nessuna</option>'
+ +'<div class="row"><div><p class="fl">Area</p><select id="ar" onchange="C.a=this.value;refreshSug();aggiornaBtn()"><option value="">nessuna</option>'
  +AN().map(a=>'<option '+(o.a===a?'selected':'')+'>'+esc(a)+'</option>').join('')+'</select></div>'
  +'<div><p class="fl">Data</p><input class="tx" id="dt" type="date" value="'+(o.d||today())+'"></div></div>'
- +'<button class="save" onclick="salva()">Salva</button>'
+ +'<button class="save" onclick="salva()" id="btnsalva">'+etichettaSalva()+'</button>'
  +(o.editing?'<div class="azioni sotto"><button class="ghost dl" style="margin:0" onclick="chiediElim('+o.id+')">'+I.tra+' Elimina voce</button><button class="ghost" style="margin:0" onclick="close_()">Annulla</button></div>'
    :'<button class="ghost" onclick="close_()">Annulla</button>'));
  const ti=$('ti');
  ti.oninput=function(){C.typed=ti.value.toLowerCase();refreshSug()};
  ti.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();const v=ti.value.trim();if(v)addtag(v)}};
 }
+function etichettaSalva(){
+ if(C.editing)return 'Salva';
+ const parti=[];
+ if(C.a)parti.push(C.a);
+ if(C.tg.length)parti.push(C.tg.join(', '));
+ return parti.length?'Salva in '+parti.join(' · '):'Salva';
+}
+function aggiornaBtn(){const b=$('btnsalva');if(b)b.textContent=etichettaSalva()}
 function selHTML(){return C.tg.map(t=>'<button class="chip on" onclick="untag(\''+esc(t)+'\')"><i style="background:'+TC(t)+'"></i>'+esc(t)+' ✕</button>').join('')}
 function dupHTML(){
  if(C.t!=='link'||C.editing)return '';
@@ -649,14 +732,14 @@ async function addtag(t){
  if(!t)return;
  if(C.tg.indexOf(t)<0)C.tg.push(t);
  C.typed='';const ti=$('ti');if(ti){ti.value='';ti.focus()}
- refreshSel();refreshSug();
+ refreshSel();refreshSug();aggiornaBtn();
  if(TN().indexOf(t)<0){
   const o={n:t,c:primoLibero(coloriTag())};
   try{await put('tags',o);TAGS.push(o);TAGS.sort((a,b)=>a.n.localeCompare(b.n));toast('Tag «'+t+'» creato')}
   catch(e){}
  }
 }
-function untag(t){C.tg=C.tg.filter(x=>x!==t);refreshSel();refreshSug()}
+function untag(t){C.tg=C.tg.filter(x=>x!==t);refreshSel();refreshSug();aggiornaBtn()}
 async function salva(){
  const it={id:C.id||Date.now(),t:C.t,ti:$('ds').value.trim()||'Senza descrizione',tg:C.tg.slice(),a:$('ar').value,
   s:C.t==='link'?($('ur')?$('ur').value.trim():C.s):(C.s||''),d:$('dt').value||today(),blob:C.blob||null,mini:C.mini||null,dur:C.dur||''};
@@ -664,35 +747,38 @@ async function salva(){
  D=D.filter(x=>x.id!==it.id);D.push(it);
  close_();tab='voci';q='';fTag='';fTipo='';render();toast('Salvato');
 }
+let COLUSATI={};
 function swatches(usati){
- usati=usati||{};
+ usati=usati||{};COLUSATI=usati;
  return '<div class="sw">'+Object.keys(COL).map(function(k){
   const u=usati[k];
-  return '<button style="background:'+COL[k]+'" class="'+(pickC===k?'on':'')+(u?' usato':'')+'" '
-   +'onclick="pickC=\''+k+'\';[].forEach.call(document.querySelectorAll(\'.sw button\'),function(b){b.classList.remove(\'on\')});this.classList.add(\'on\');avvisaColore(\''+k+'\')" '
-   +'aria-label="'+k+(u?', già usato da '+esc(u):'')+'" title="'+k+(u?' — già usato da '+esc(u):'')+'"></button>';
- }).join('')+'</div><p id="colmsg" class="warn" style="display:none"></p>';
+  if(u)return '<button style="background:'+COL[k]+'" class="bloccato" disabled aria-label="'+k+', già di '+esc(u)+'" title="già di '+esc(u)+'"></button>';
+  return '<button style="background:'+COL[k]+'" class="'+(pickC===k?'on':'')+'" '
+   +'onclick="pickC=\''+k+'\';[].forEach.call(document.querySelectorAll(\'.sw button\'),function(b){b.classList.remove(\'on\')});this.classList.add(\'on\')" aria-label="'+k+'"></button>';
+ }).join('')+'</div>';
 }
-let COLUSATI={};
-function avvisaColore(k){
- const e=$('colmsg');if(!e)return;
- const u=COLUSATI[k];
- if(u){e.textContent='Questo colore è già di «'+u+'». Puoi usarlo lo stesso, ma sarà più difficile distinguerle.';e.style.display=''}
- else{e.style.display='none'}
+let pickI='cartella';
+function iconePick(){
+ return '<div class="icone">'+Object.keys(AICO).map(function(k){
+  return '<button class="'+(pickI===k?'on':'')+'" style="'+(pickI===k?'background:'+COL[pickC]:'')+'" onclick="pickI=\''+k+'\';[].forEach.call(document.querySelectorAll(\'.icone button\'),function(b){b.classList.remove(\'on\');b.style.background=\'\'});this.classList.add(\'on\');this.style.background=COL[pickC]" aria-label="'+k+'">'+AICO[k]+'</button>';
+ }).join('')+'</div>';
 }
 function coloriTag(escludi){const u={};TAGS.forEach(t=>{if(t.n!==escludi)u[t.c]=t.n});return u}
+function nuovoTagCol(){const u=coloriTag();return primoLibero(u)}
 function nuovoTag(){COLUSATI=coloriTag();pickC=primoLibero(COLUSATI);
  sheet('<h3>Nuovo tag</h3><p class="fl">Nome</p><input class="tx" id="nt" placeholder="allestimento" autocapitalize="none">'
  +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches(COLUSATI)
  +'<button class="save" onclick="addTag()">Crea</button><button class="ghost" onclick="close_()">Annulla</button>');setTimeout(()=>$('nt').focus(),120)}
 async function addTag(){const v=$('nt').value.toLowerCase().trim();if(!v){toast('Scrivi un nome');return}
  if(TN().indexOf(v)>=0){toast('Esiste già');return}
+ if(coloriTag()[pickC]){toast('Colore già usato');return}
  const o={n:v,c:pickC};await put('tags',o);TAGS.push(o);TAGS.sort((a,b)=>a.n.localeCompare(b.n));close_();render();toast('Tag creato')}
 function editTag(n){const t=TAGS.find(x=>x.n===n);pickC=t.c;COLUSATI=coloriTag(n);
  sheet('<h3>Modifica tag</h3><p class="fl">Nome</p><input class="tx" id="nt" value="'+esc(n)+'" autocapitalize="none">'
  +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches(COLUSATI)
  +'<button class="save" onclick="saveTag(\''+esc(n)+'\')">Salva</button><button class="ghost" onclick="close_()">Annulla</button>')}
 async function saveTag(old){const v=$('nt').value.toLowerCase().trim();if(!v){toast('Scrivi un nome');return}
+ if(coloriTag(old)[pickC]){toast('Colore già usato');return}
  if(v!==old){
   for(const i of D)if(i.tg.indexOf(old)>=0){i.tg=i.tg.map(x=>x===old?v:x).filter((x,k,a)=>a.indexOf(x)===k);await put('items',i)}
   TAGS=TAGS.filter(x=>x.n!==old);await del('tags',old);TAGS.push({n:v,c:pickC});
@@ -709,23 +795,29 @@ function coloriAree(escludi){
  const u={};AREE.forEach(a=>{if(a.n!==escludi)u[a.c]=a.n});return u;
 }
 function primoLibero(u){const k=Object.keys(COL).find(x=>!u[x]);return k||'viola'}
-function newArea(){COLUSATI=coloriAree();pickC=primoLibero(COLUSATI);
+function newArea(){const u=coloriAree();pickC=primoLibero(u);pickI='cartella';
  sheet('<h3>Nuova area</h3><p class="fl">Nome</p><input class="tx" id="na" placeholder="Viaggi">'
- +'<p class="fl" style="margin-top:14px">Colore</p><p style="font-size:12.5px;color:var(--mut);margin:-2px 0 8px">Quelli con il pallino sono già usati da un\'altra area.</p>'+swatches(COLUSATI)
+ +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches(u)
+ +'<p style="font-size:12.5px;color:var(--mut);margin:8px 0 0">I colori sbarrati sono già di un\'altra area.</p>'
+ +'<p class="fl" style="margin-top:14px">Icona</p>'+iconePick()
  +'<button class="save" onclick="addArea()">Crea</button><button class="ghost" onclick="close_()">Annulla</button>');setTimeout(()=>$('na').focus(),120)}
 async function addArea(){const v=$('na').value.trim();if(!v){toast('Scrivi un nome');return}
  if(AN().indexOf(v)>=0){toast('Esiste già');return}
- AREE.push({n:v,c:pickC});await put('areas',{n:v,c:pickC});close_();render();toast('Area creata')}
-function editArea(n){const a=AREE.find(x=>x.n===n);pickC=a.c;COLUSATI=coloriAree(n);
+ if(coloriAree()[pickC]){toast('Colore già usato');return}
+ const o={n:v,c:pickC,ic:pickI};AREE.push(o);await put('areas',o);close_();render();toast('Area creata')}
+function editArea(n){const a=AREE.find(x=>x.n===n);pickC=a.c;pickI=a.ic||'cartella';
  sheet('<h3>Modifica area</h3><p class="fl">Nome</p><input class="tx" id="na" value="'+esc(a.n)+'">'
- +'<p class="fl" style="margin-top:14px">Colore</p><p style="font-size:12.5px;color:var(--mut);margin:-2px 0 8px">Quelli con il pallino sono già usati da un\'altra area.</p>'+swatches(COLUSATI)
+ +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches(coloriAree(n))
+ +'<p style="font-size:12.5px;color:var(--mut);margin:8px 0 0">I colori sbarrati sono già di un\'altra area.</p>'
+ +'<p class="fl" style="margin-top:14px">Icona</p>'+iconePick()
  +'<button class="save" onclick="saveArea(\''+esc(n)+'\')">Salva</button>'
- +'<button class="save dl" style="margin-top:9px" onclick="chiediDelArea(\''+esc(n)+'\')">Elimina area</button>'
- +'<button class="ghost" onclick="close_()">Annulla</button>')}
+ +'<div class="azioni sotto"><button class="ghost dl" style="margin:0" onclick="chiediDelArea(\''+esc(n)+'\')">'+I.tra+' Elimina area</button>'
+ +'<button class="ghost" style="margin:0" onclick="close_()">Annulla</button></div>')}
 async function saveArea(old){const v=$('na').value.trim();if(!v){toast('Scrivi un nome');return}
- const a=AREE.find(x=>x.n===old);a.n=v;a.c=pickC;
+ if(coloriAree(old)[pickC]){toast('Colore già usato');return}
+ const a=AREE.find(x=>x.n===old);a.n=v;a.c=pickC;a.ic=pickI;
  if(v!==old){await del('areas',old);for(const i of D)if(i.a===old){i.a=v;await put('items',i)}if(area===old)area=v}
- await put('areas',{n:v,c:pickC});close_();render();toast('Area aggiornata')}
+ await put('areas',{n:v,c:pickC,ic:pickI});close_();render();toast('Area aggiornata')}
 function chiediDelArea(n){const c=D.filter(i=>i.a===n).length;
  sheet('<h3>Eliminare «'+esc(n)+'»?</h3><p style="font-size:14px;color:var(--mut);margin:0">'+(c?'Le '+c+' voci restano, ma senza area.':'L\'area è vuota.')+'</p>'
  +'<button class="save dl" onclick="doDelArea(\''+esc(n)+'\')">Elimina</button><button class="ghost" onclick="close_()">Annulla</button>')}
@@ -762,6 +854,16 @@ async function importa(el){
    await put('items',o);D.push(o);n++}
   render();toast(n+' voci importate')}catch(e){toast('File non valido')}
 }
+function daIndirizzo(){
+ const p=new URLSearchParams(location.search);
+ const u=(p.get('u')||p.get('url')||'').trim();
+ const t=(p.get('t')||p.get('text')||p.get('title')||'').trim();
+ if(!u&&!t)return false;
+ const m=(u+' '+t).match(/https?:\/\/\S+/);
+ if(m)cap({t:'link',s:m[0],ti:t.replace(m[0],'').trim()});
+ else cap({t:'nota',ti:t||u});
+ return true;
+}
 async function checkPending(){
  if($('sheet').classList.contains('open'))return;
  const p=await all('pending');if(!p.length)return;
@@ -775,10 +877,12 @@ async function checkPending(){
 async function boot(){
  try{D=await all('items');AREE=await all('areas');TAGS=await all('tags')}
  catch(e){$('main').innerHTML='<div class="empty"><b>Archivio non accessibile</b>Controlla di non essere in navigazione privata.</div>';return}
- if(!AREE.length){AREE=[{n:'Lavoro',c:'blu'},{n:'Casa',c:'ambra'},{n:'Idee',c:'verde'}];for(const a of AREE)await put('areas',a)}
+ if(!AREE.length){AREE=[{n:'Lavoro',c:'blu',ic:'valigetta'},{n:'Casa',c:'ambra',ic:'casa'},{n:'Idee',c:'verde',ic:'lampadina'}];for(const a of AREE)await put('areas',a)}
+ AREE=AREE.map(a=>a.ic?a:Object.assign({},a,{ic:'cartella'}));
  TAGS=TAGS.map(t=>typeof t==='string'?{n:t,c:'viola'}:(t.c?t:{n:t.n,c:'viola'})).sort((a,b)=>a.n.localeCompare(b.n));
  render();
  await checkPending();
+ daIndirizzo();
  if(location.search)history.replaceState({},'',location.pathname);
  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 }
