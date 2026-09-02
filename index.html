@@ -123,12 +123,36 @@ textarea:focus,input.tx:focus{border-color:var(--ac);background:var(--card)}
 .sw{display:flex;gap:10px;flex-wrap:wrap}
 .sw button{width:42px;height:42px;border-radius:12px;border:2.5px solid transparent;cursor:pointer;padding:0}
 .sw button.on{border-color:var(--ink)}
+.sw button.usato{position:relative}
+.sw button.usato:after{content:"";position:absolute;right:3px;bottom:3px;width:8px;height:8px;border-radius:50%;background:#fff;border:2px solid rgba(0,0,0,.35)}
+.sw{max-height:150px;overflow-y:auto}
 .save{width:100%;background:var(--ac);color:#fff;border:0;border-radius:12px;padding:15px;font:inherit;font-weight:600;font-size:15px;margin-top:18px;cursor:pointer}
 .save.dl{background:var(--dan)}
 .ghost{width:100%;background:0;border:0;color:var(--mut);padding:12px;font:inherit;font-size:14px;margin-top:4px;cursor:pointer}
 .menu button{display:flex;align-items:center;gap:14px;width:100%;background:var(--bg);border:0;border-radius:12px;padding:14px;font:inherit;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;margin-bottom:9px;text-align:left}
 .menu .ic{width:38px;height:38px;border-radius:11px;background:var(--acs);color:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .menu .ic svg{width:18px;height:18px}
+.risorsa{display:flex;align-items:center;gap:11px;width:100%;border:1.5px solid;border-radius:12px;padding:12px;margin-bottom:14px;text-decoration:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.risorsa .ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.risorsa .ico svg{width:20px;height:20px}
+.risorsa .txt{min-width:0;flex:1;display:block}
+.risorsa .txt b{display:block;font-size:14.5px;font-weight:500}
+.risorsa .txt span{display:block;font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.risorsa .az{flex-shrink:0;display:flex}
+.risorsa .az svg{width:19px;height:19px}
+.onda{display:flex;align-items:center;gap:2px;height:16px}
+.onda i{flex:1;opacity:.45;border-radius:2px}
+.azioni{display:flex;gap:10px;align-items:center;margin-top:16px}
+.azioni.sotto{border-top:1px solid var(--line);padding-top:10px;margin-top:12px}
+.secondario{flex:1;background:0;border:1px solid var(--line);border-radius:12px;padding:13px;font:inherit;font-size:14.5px;color:var(--mut);cursor:pointer}
+.ghost.dl{color:var(--dan);flex:1;display:flex;align-items:center;justify-content:center;gap:6px}
+.ghost.dl svg{width:15px;height:15px}
+.azioni .ghost{flex:1}
+.lightbox{position:fixed;inset:0;background:rgba(15,14,20,.94);display:flex;align-items:center;justify-content:center;z-index:40;padding:16px}
+.lightbox img{max-width:100%;max-height:100%;border-radius:8px}
+.lightbox .chiudi{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;background:rgba(255,255,255,.18);border:0;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.lightbox .chiudi svg{width:20px;height:20px}
+.prev{cursor:zoom-in}
 .dial{text-align:center;padding:8px 0 4px}
 .dot{width:92px;height:92px;border-radius:50%;background:var(--ac);color:#fff;border:0;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;cursor:pointer;animation:p 1.4s infinite}
 .dot svg{width:32px;height:32px}
@@ -186,8 +210,19 @@ const I={
  piu:'<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
  ind:'<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
  x:'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
- inv:'<svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-6z"/></svg>'};
-const COL={viola:'#6C63D6',blu:'#3B82F6',verde:'#22C55E',ambra:'#F59E0B',rosa:'#EC4899',rosso:'#EF4444',menta:'#14B8A6',lilla:'#A855F7',grigio:'#8B8A94'};
+ inv:'<svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-6z"/></svg>',
+ esterno:'<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+ play:'<svg viewBox="0 0 24 24"><path d="M7 4.5l13 7.5-13 7.5z" fill="currentColor" stroke="none"/></svg>',
+ pausa:'<svg viewBox="0 0 24 24"><rect x="6.5" y="5" width="4" height="14" rx="1.5" fill="currentColor" stroke="none"/><rect x="13.5" y="5" width="4" height="14" rx="1.5" fill="currentColor" stroke="none"/></svg>',
+ espandi:'<svg viewBox="0 0 24 24"><path d="M9 4H4v5M15 4h5v5M15 20h5v-5M9 20H4v-5"/></svg>',
+ yt:'<svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="currentColor" stroke="none"/><path d="M10 9.5l5.5 3-5.5 3z" fill="#fff" stroke="none"/></svg>',
+ ig:'<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.3" fill="currentColor" stroke="none"/></svg>',
+ fb:'<svg viewBox="0 0 24 24"><path d="M14.5 8.5h2.5V5h-2.6C12 5 10.8 6.6 10.8 8.8v1.9H8.5v3.5h2.3V21h3.7v-6.8h2.5l.5-3.5h-3v-1.4c0-.5.3-.8 1-.8z" fill="currentColor" stroke="none"/></svg>',
+ tt:'<svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5" /><path d="M14 6.5c1 1.6 2.6 2.6 4.5 2.7"/></svg>',
+ li:'<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.6v.1M12 16v-3.2a2 2 0 0 1 4 0V16"/></svg>'};
+const COL={viola:'#6C63D6',indaco:'#4F46E5',blu:'#3B82F6',cielo:'#0EA5E9',menta:'#14B8A6',verde:'#22C55E',oliva:'#84CC16',lime:'#65A30D',
+ ambra:'#F59E0B',arancio:'#F97316',mattone:'#C2410C',rosso:'#EF4444',rosa:'#EC4899',magenta:'#DB2777',lilla:'#A855F7',prugna:'#7E22CE',
+ sabbia:'#A8763E',ardesia:'#64748B',grigio:'#8B8A94',carbone:'#44403C'};
 const soft=h=>h+'22';
 let D=[],AREE=[],TAGS=[],tab='voci',q='',fTipo='',fTag='',area='',sel=[],selMode=false,edit=false,C=null,pickC='viola',recT=null,recS=0,mediaRec=null,chunks=[],urls=new Map();
 const $=i=>document.getElementById(i);
@@ -222,6 +257,20 @@ function norm(u){
 const dom=u=>{const n=norm(u);return n.startsWith('yt:')?'youtube':(n.split('/')[0]||'')};
 const findDup=u=>{const n=norm(u);return n?D.find(i=>i.s&&norm(i.s)===n):null};
 const conta=t=>D.filter(i=>i.tg.includes(t)).length;
+const SERV=[
+ {k:'youtube',re:/(^|\.)(youtube\.com|youtu\.be)$/,nome:'YouTube',col:'#FF0000',ic:'yt',az:'play'},
+ {k:'instagram',re:/(^|\.)instagram\.com$/,nome:'Instagram',col:'#C13584',ic:'ig',grad:'linear-gradient(135deg,#F9CE34,#EE2A7B 55%,#6228D7)'},
+ {k:'facebook',re:/(^|\.)(facebook\.com|fb\.watch|fb\.com)$/,nome:'Facebook',col:'#1877F2',ic:'fb'},
+ {k:'tiktok',re:/(^|\.)tiktok\.com$/,nome:'TikTok',col:'#111114',ic:'tt',az:'play'},
+ {k:'linkedin',re:/(^|\.)(linkedin\.com|lnkd\.in)$/,nome:'LinkedIn',col:'#0A66C2',ic:'li'}
+];
+function servizio(u){
+ if(!u)return null;
+ let host='';
+ try{host=new URL(/^https?:\/\//i.test(u)?u:'https://'+u).hostname.replace(/^www\./,'').toLowerCase()}catch(e){host=String(u).toLowerCase()}
+ for(const s of SERV)if(s.re.test(host))return Object.assign({host:host},s);
+ return {k:'web',nome:host||'Link',col:'#534AB7',ic:'link',host:host};
+}
 function suggest(ar,src,typed){
  const c={};TN().forEach(t=>c[t]=0);
  D.forEach(i=>{let w=1;if(ar&&i.a===ar)w+=6;if(src&&dom(i.s)&&dom(i.s)===dom(src))w+=3;i.tg.forEach(t=>{if(c[t]===undefined)c[t]=0;c[t]+=w})});
@@ -242,11 +291,12 @@ function results(){
  }).sort((a,b)=>String(b.d).localeCompare(String(a.d))||b.id-a.id);
 }
 function card(i){
- const c=i.a?AC(i.a):'#8B8A94';
+ let c=i.a?AC(i.a):'#8B8A94',ic=I[i.t];
+ if(i.t==='link'){const sv=servizio(i.s);if(sv.k!=='web'){c=sv.col;ic=I[sv.ic]}}
  const sotto=i.tg.length?i.tg.join(' · '):(i.a||'senza tag');
  return '<div class="swipe"><div class="card '+(sel.includes(i.id)?'selon':'')+'" data-id="'+i.id+'" onclick="tapItem('+i.id+')">'
   +(selMode?'<span class="box '+(sel.includes(i.id)?'on':'')+'"></span>'
-   :'<span class="sq" style="background:'+c+'">'+(i.t==='foto'&&i.blob?'<img src="'+mUrl(i)+'" alt="">':I[i.t])+'</span>')
+   :'<span class="sq" style="background:'+c+'">'+(i.t==='foto'&&i.blob?'<img src="'+mUrl(i)+'" alt="">':ic)+'</span>')
   +'<div class="b"><p>'+hl(i.ti||'Senza descrizione')+'</p><span>'+esc(sotto)+'</span></div>'
   +'<div class="rt">'+(i.t==='vocale'&&i.dur?esc(i.dur):'')+'</div></div></div>';
 }
@@ -405,16 +455,60 @@ function tagSel(){sheet('<h3>Tag a '+sel.length+' voci</h3><div class="chips">'
  +(TAGS.length?TAGS.map(t=>'<button class="chip" onclick="doTagSel(\''+esc(t.n)+'\')"><i style="background:'+COL[t.c]+'"></i>'+esc(t.n)+'</button>').join(''):'<span style="color:var(--mut)">Nessun tag creato</span>')
  +'</div><button class="ghost" onclick="close_()">Annulla</button>')}
 async function doTagSel(t){for(const i of D)if(sel.includes(i.id)&&!i.tg.includes(t)){i.tg.push(t);await put('items',i)}const n=sel.length;sel=[];selMode=false;close_();render();toast(n+' voci taggate')}
+function onde(col){
+ const h=[5,11,16,9,14,6,12,8,15,7,13,9,16,10,6,12];
+ return '<div class="onda">'+h.map(x=>'<i style="height:'+x+'px;background:'+col+'"></i>').join('')+'</div>';
+}
+function cardHTML(i){
+ if(i.t==='link'){
+  const s=servizio(i.s);
+  const sfondo=s.grad||s.col;
+  const az=s.az==='play'?I.play:I.esterno;
+  return '<a class="risorsa" href="'+esc(i.s)+'" target="_blank" rel="noopener" style="border-color:'+s.col+'33;background:'+s.col+'0F">'
+   +'<span class="ico" style="background:'+sfondo+'">'+I[s.ic]+'</span>'
+   +'<span class="txt"><b>'+esc(s.nome)+'</b><span>'+esc(String(i.s).replace(/^https?:\/\//,''))+'</span></span>'
+   +'<span class="az" style="color:'+s.col+'">'+az+'</span></a>';
+ }
+ if(i.t==='vocale'){
+  const c='#E14767';
+  return '<button class="risorsa" onclick="suona('+i.id+')" style="border-color:'+c+'33;background:'+c+'0F">'
+   +'<span class="ico" style="background:'+c+'">'+I.vocale+'</span>'
+   +'<span class="txt">'+onde(c)+'<span>'+esc(i.dur||'vocale')+'</span></span>'
+   +'<span class="az" id="azplay" style="color:'+c+'">'+I.play+'</span></button>'
+   +'<audio id="player" style="display:none" src="'+oUrl(i)+'"></audio>';
+ }
+ if(i.t==='foto'){
+  const c='#0F6E56';
+  return '<button class="risorsa" onclick="apriFoto('+i.id+')" style="border-color:'+c+'33;background:'+c+'0F">'
+   +'<span class="ico" style="background:'+c+'">'+I.foto+'</span>'
+   +'<span class="txt"><b>Foto</b><span>'+(i.blob?Math.round(i.blob.size/1024)+' KB':'immagine')+'</span></span>'
+   +'<span class="az" style="color:'+c+'">'+I.espandi+'</span></button>';
+ }
+ const c='#854F0B';
+ return '<div class="risorsa" style="border-color:'+c+'33;background:'+c+'0F">'
+  +'<span class="ico" style="background:'+c+'">'+I.nota+'</span>'
+  +'<span class="txt"><b>Appunto</b><span>'+fmtb(i.d)+'</span></span></div>';
+}
 function det(id){const i=D.find(x=>x.id===id);if(!i)return;
  sheet('<h3>'+esc(i.ti||'Senza descrizione')+'</h3>'
- +(i.t==='foto'&&i.blob?'<img class="prev" src="'+oUrl(i)+'" alt="">':'')
- +(i.t==='vocale'&&i.blob?'<audio controls src="'+oUrl(i)+'"></audio>':'')
- +(i.s&&i.t==='link'?'<p style="margin:0 0 14px"><a href="'+esc(i.s)+'" target="_blank" rel="noopener" style="color:var(--ac);font-size:13px;word-break:break-all">'+esc(i.s)+'</a></p>':'')
+ +(i.t==='foto'&&i.blob?'<img class="prev" src="'+oUrl(i)+'" alt="" onclick="apriFoto('+i.id+')">':'')
+ +cardHTML(i)
  +'<div class="chips">'+(i.tg.map(t=>'<span class="chip"><i style="background:'+TC(t)+'"></i>'+esc(t)+'</span>').join('')||'<span style="color:var(--mut);font-size:14px">Senza tag</span>')+'</div>'
  +'<p style="font-size:13px;color:var(--fnt);margin:0">'+[i.a,fmtb(i.d)].filter(Boolean).join(' · ')+'</p>'
- +'<button class="save" onclick="editItem('+i.id+')">Modifica</button>'
- +'<button class="save dl" style="margin-top:9px" onclick="chiediElim('+i.id+')">Elimina</button>'
- +'<button class="ghost" onclick="close_()">Chiudi</button>')}
+ +'<div class="azioni"><button class="secondario" onclick="editItem('+i.id+')">Modifica</button>'
+ +'<button class="ghost" style="margin:0" onclick="close_()">Chiudi</button></div>')}
+function suona(id){
+ const p=$('player'),a=$('azplay');if(!p)return;
+ if(p.paused){p.play();a.innerHTML=I.pausa;p.onended=()=>{a.innerHTML=I.play}}
+ else{p.pause();a.innerHTML=I.play}
+}
+function apriFoto(id){
+ const i=D.find(x=>x.id===id);if(!i||!i.blob)return;
+ const d=document.createElement('div');d.className='lightbox';
+ d.innerHTML='<img src="'+oUrl(i)+'" alt=""><button class="chiudi" aria-label="Chiudi">'+I.x+'</button>';
+ d.onclick=()=>d.remove();
+ document.body.appendChild(d);
+}
 function editItem(id){const i=D.find(x=>x.id===id);C=Object.assign({},i,{typed:'',editing:true});
  if(C.blob)C.tmp=oUrl(i);drawCap()}
 function menuNuovo(){
@@ -473,7 +567,7 @@ async function laddtag(t){
  if(LTAG.indexOf(t)<0)LTAG.push(t);
  LTYPED='';const ti=$('lti');if(ti){ti.value='';ti.focus()}
  $('lselbox').innerHTML=lselHTML();$('lsugbox').innerHTML=lsugHTML();
- if(TN().indexOf(t)<0){const o={n:t,c:'viola'};try{await put('tags',o);TAGS.push(o);TAGS.sort((a,b)=>a.n.localeCompare(b.n))}catch(e){}}
+ if(TN().indexOf(t)<0){const o={n:t,c:primoLibero(coloriTag())};try{await put('tags',o);TAGS.push(o);TAGS.sort((a,b)=>a.n.localeCompare(b.n))}catch(e){}}
 }
 function luntag(t){LTAG=LTAG.filter(x=>x!==t);$('lselbox').innerHTML=lselHTML();$('lsugbox').innerHTML=lsugHTML()}
 async function salvaLotto(){
@@ -524,7 +618,9 @@ function drawCap(){
  +'<div class="row"><div><p class="fl">Area</p><select id="ar" onchange="C.a=this.value;refreshSug()"><option value="">nessuna</option>'
  +AN().map(a=>'<option '+(o.a===a?'selected':'')+'>'+esc(a)+'</option>').join('')+'</select></div>'
  +'<div><p class="fl">Data</p><input class="tx" id="dt" type="date" value="'+(o.d||today())+'"></div></div>'
- +'<button class="save" onclick="salva()">Salva</button><button class="ghost" onclick="close_()">Annulla</button>');
+ +'<button class="save" onclick="salva()">Salva</button>'
+ +(o.editing?'<div class="azioni sotto"><button class="ghost dl" style="margin:0" onclick="chiediElim('+o.id+')">'+I.tra+' Elimina voce</button><button class="ghost" style="margin:0" onclick="close_()">Annulla</button></div>'
+   :'<button class="ghost" onclick="close_()">Annulla</button>'));
  const ti=$('ti');
  ti.oninput=function(){C.typed=ti.value.toLowerCase();refreshSug()};
  ti.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();const v=ti.value.trim();if(v)addtag(v)}};
@@ -555,7 +651,7 @@ async function addtag(t){
  C.typed='';const ti=$('ti');if(ti){ti.value='';ti.focus()}
  refreshSel();refreshSug();
  if(TN().indexOf(t)<0){
-  const o={n:t,c:'viola'};
+  const o={n:t,c:primoLibero(coloriTag())};
   try{await put('tags',o);TAGS.push(o);TAGS.sort((a,b)=>a.n.localeCompare(b.n));toast('Tag «'+t+'» creato')}
   catch(e){}
  }
@@ -568,16 +664,33 @@ async function salva(){
  D=D.filter(x=>x.id!==it.id);D.push(it);
  close_();tab='voci';q='';fTag='';fTipo='';render();toast('Salvato');
 }
-const swatches=()=>'<div class="sw">'+Object.keys(COL).map(k=>'<button style="background:'+COL[k]+'" class="'+(pickC===k?'on':'')+'" onclick="pickC=\''+k+'\';[].forEach.call(document.querySelectorAll(\'.sw button\'),function(b){b.classList.remove(\'on\')});this.classList.add(\'on\')" aria-label="'+k+'"></button>').join('')+'</div>';
-function nuovoTag(){pickC='viola';sheet('<h3>Nuovo tag</h3><p class="fl">Nome</p><input class="tx" id="nt" placeholder="allestimento" autocapitalize="none">'
- +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches()
+function swatches(usati){
+ usati=usati||{};
+ return '<div class="sw">'+Object.keys(COL).map(function(k){
+  const u=usati[k];
+  return '<button style="background:'+COL[k]+'" class="'+(pickC===k?'on':'')+(u?' usato':'')+'" '
+   +'onclick="pickC=\''+k+'\';[].forEach.call(document.querySelectorAll(\'.sw button\'),function(b){b.classList.remove(\'on\')});this.classList.add(\'on\');avvisaColore(\''+k+'\')" '
+   +'aria-label="'+k+(u?', già usato da '+esc(u):'')+'" title="'+k+(u?' — già usato da '+esc(u):'')+'"></button>';
+ }).join('')+'</div><p id="colmsg" class="warn" style="display:none"></p>';
+}
+let COLUSATI={};
+function avvisaColore(k){
+ const e=$('colmsg');if(!e)return;
+ const u=COLUSATI[k];
+ if(u){e.textContent='Questo colore è già di «'+u+'». Puoi usarlo lo stesso, ma sarà più difficile distinguerle.';e.style.display=''}
+ else{e.style.display='none'}
+}
+function coloriTag(escludi){const u={};TAGS.forEach(t=>{if(t.n!==escludi)u[t.c]=t.n});return u}
+function nuovoTag(){COLUSATI=coloriTag();pickC=primoLibero(COLUSATI);
+ sheet('<h3>Nuovo tag</h3><p class="fl">Nome</p><input class="tx" id="nt" placeholder="allestimento" autocapitalize="none">'
+ +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches(COLUSATI)
  +'<button class="save" onclick="addTag()">Crea</button><button class="ghost" onclick="close_()">Annulla</button>');setTimeout(()=>$('nt').focus(),120)}
 async function addTag(){const v=$('nt').value.toLowerCase().trim();if(!v){toast('Scrivi un nome');return}
  if(TN().indexOf(v)>=0){toast('Esiste già');return}
  const o={n:v,c:pickC};await put('tags',o);TAGS.push(o);TAGS.sort((a,b)=>a.n.localeCompare(b.n));close_();render();toast('Tag creato')}
-function editTag(n){const t=TAGS.find(x=>x.n===n);pickC=t.c;
+function editTag(n){const t=TAGS.find(x=>x.n===n);pickC=t.c;COLUSATI=coloriTag(n);
  sheet('<h3>Modifica tag</h3><p class="fl">Nome</p><input class="tx" id="nt" value="'+esc(n)+'" autocapitalize="none">'
- +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches()
+ +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches(COLUSATI)
  +'<button class="save" onclick="saveTag(\''+esc(n)+'\')">Salva</button><button class="ghost" onclick="close_()">Annulla</button>')}
 async function saveTag(old){const v=$('nt').value.toLowerCase().trim();if(!v){toast('Scrivi un nome');return}
  if(v!==old){
@@ -592,15 +705,20 @@ function delTag(n){const c=conta(n);
 async function doDelTag(n){
  for(const i of D)if(i.tg.indexOf(n)>=0){i.tg=i.tg.filter(x=>x!==n);await put('items',i)}
  TAGS=TAGS.filter(x=>x.n!==n);await del('tags',n);if(fTag===n)fTag='';close_();render();toast('Tag eliminato')}
-function newArea(){pickC='blu';sheet('<h3>Nuova area</h3><p class="fl">Nome</p><input class="tx" id="na" placeholder="Viaggi">'
- +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches()
+function coloriAree(escludi){
+ const u={};AREE.forEach(a=>{if(a.n!==escludi)u[a.c]=a.n});return u;
+}
+function primoLibero(u){const k=Object.keys(COL).find(x=>!u[x]);return k||'viola'}
+function newArea(){COLUSATI=coloriAree();pickC=primoLibero(COLUSATI);
+ sheet('<h3>Nuova area</h3><p class="fl">Nome</p><input class="tx" id="na" placeholder="Viaggi">'
+ +'<p class="fl" style="margin-top:14px">Colore</p><p style="font-size:12.5px;color:var(--mut);margin:-2px 0 8px">Quelli con il pallino sono già usati da un\'altra area.</p>'+swatches(COLUSATI)
  +'<button class="save" onclick="addArea()">Crea</button><button class="ghost" onclick="close_()">Annulla</button>');setTimeout(()=>$('na').focus(),120)}
 async function addArea(){const v=$('na').value.trim();if(!v){toast('Scrivi un nome');return}
  if(AN().indexOf(v)>=0){toast('Esiste già');return}
  AREE.push({n:v,c:pickC});await put('areas',{n:v,c:pickC});close_();render();toast('Area creata')}
-function editArea(n){const a=AREE.find(x=>x.n===n);pickC=a.c;
+function editArea(n){const a=AREE.find(x=>x.n===n);pickC=a.c;COLUSATI=coloriAree(n);
  sheet('<h3>Modifica area</h3><p class="fl">Nome</p><input class="tx" id="na" value="'+esc(a.n)+'">'
- +'<p class="fl" style="margin-top:14px">Colore</p>'+swatches()
+ +'<p class="fl" style="margin-top:14px">Colore</p><p style="font-size:12.5px;color:var(--mut);margin:-2px 0 8px">Quelli con il pallino sono già usati da un\'altra area.</p>'+swatches(COLUSATI)
  +'<button class="save" onclick="saveArea(\''+esc(n)+'\')">Salva</button>'
  +'<button class="save dl" style="margin-top:9px" onclick="chiediDelArea(\''+esc(n)+'\')">Elimina area</button>'
  +'<button class="ghost" onclick="close_()">Annulla</button>')}
