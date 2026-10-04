@@ -183,6 +183,12 @@ audio{width:100%;margin-bottom:14px}
 .prev{width:100%;border-radius:12px;display:block;margin-bottom:14px}
 .toast{position:fixed;left:16px;right:16px;bottom:calc(86px + env(safe-area-inset-bottom));max-width:420px;margin:0 auto;background:var(--ink);color:#fff;padding:13px 15px;border-radius:12px;font-size:14px;opacity:0;transform:translateY(8px);transition:.22s;pointer-events:none;z-index:30}
 .toast.show{opacity:1;transform:none}
+.bkbar{position:fixed;left:16px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));max-width:420px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px;z-index:17;box-shadow:0 6px 20px rgba(31,30,38,.14);display:flex;align-items:center;gap:10px}
+.bkbar p{flex:1;margin:0;font-size:13.5px;color:var(--ink);line-height:1.35}
+.bkbar p span{display:block;font-size:12px;color:var(--mut)}
+.bkbar button{border:0;border-radius:10px;padding:10px 12px;font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.bkbar .ok{background:var(--ac);color:#fff;font-weight:600}
+.bkbar .no{background:0;color:var(--mut);padding:10px 4px}
 </style>
 </head>
 <body>
@@ -437,6 +443,10 @@ function render(){
    +'<div class="trow"><p>Aree</p><span class="n">'+AREE.length+'</span></div>'
    +'<div class="trow"><p>Tag</p><span class="n">'+TAGS.length+'</span></div>'
    +'<div class="trow"><p>Foto e vocali</p><span class="n">'+mb+' MB</span></div>'
+   +'<div class="trow"><p>Ultimo backup</p><span class="n">'+bkQuando()+'</span></div>'
+   +(FSA?'<div class="trow"><p>Backup automatico</p><span class="n">'+(BKDIR?esc(BKDIR.name):'spento')+'</span></div>'
+     +'<button class="big" style="margin-top:12px" onclick="scegliCartella()">'+(BKDIR?'Cambia cartella backup':'Attiva backup automatico')+'</button>'
+     +(BKDIR?'<button class="ghost" onclick="spegniAuto()">Disattiva backup automatico</button>':''):'')
    +'<button class="save" onclick="esporta()">Esporta backup</button>'
    +'<button class="big" style="margin-top:12px" onclick="document.getElementById(\'imp\').click()">Importa backup</button>'
    +'<input type="file" id="imp" accept="application/json" style="display:none" onchange="importa(this)">'
@@ -852,12 +862,67 @@ async function aggiorna(){
 async function persist(){if(!navigator.storage||!navigator.storage.persist){toast('Non supportato');return}
  const ok=await navigator.storage.persist();toast(ok?'Dati protetti':'Android ha rifiutato, riprova più avanti')}
 const b2d=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)});
-async function esporta(){
+async function creaBackup(){
  const out={v:3,at:new Date().toISOString(),aree:AREE,tags:TAGS,items:[]};
  for(const i of D){const o=Object.assign({},i);if(i.blob)o.blob=await b2d(i.blob);if(i.mini)o.mini=await b2d(i.mini);out.items.push(o)}
- const u=URL.createObjectURL(new Blob([JSON.stringify(out)],{type:'application/json'}));
+ return new Blob([JSON.stringify(out)],{type:'application/json'})}
+async function esporta(){
+ const u=URL.createObjectURL(await creaBackup());
  const a=document.createElement('a');a.href=u;a.download='second-brain-'+today()+'.json';a.click();
- setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Backup scaricato')}
+ setTimeout(()=>URL.revokeObjectURL(u),4000);segnaBackup();nascondiBk();toast('Backup scaricato');if(tab==='imp')render()}
+
+/* ---------- backup automatico ---------- */
+const FSA='showDirectoryPicker' in window;   // PC: scrive da solo in una cartella; telefono: promemoria
+const BK_GIORNI=7;                            // telefono: avviso dopo 7 giorni senza backup
+const BK_COPIE=10;                            // PC: copie automatiche da tenere nella cartella
+let BKDIR=null,bkInCorso=false,bkRimandato=false;
+function cfgDb(){return new Promise((res,rej)=>{const r=indexedDB.open('secondbrain-cfg',1);
+ r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function cfgGet(k){const db=await cfgDb();return new Promise(res=>{const t=db.transaction('kv').objectStore('kv').get(k);t.onsuccess=()=>{res(t.result);db.close()};t.onerror=()=>{res(null);db.close()}})}
+async function cfgSet(k,v){const db=await cfgDb();return new Promise(res=>{const t=db.transaction('kv','readwrite');v===undefined?t.objectStore('kv').delete(k):t.objectStore('kv').put(v,k);t.oncomplete=()=>{res();db.close()};t.onerror=()=>{res();db.close()}})}
+function segnaBackup(){try{localStorage.setItem('sb-lastbk',String(Date.now()))}catch(e){}}
+function ultimoBackup(){try{return +localStorage.getItem('sb-lastbk')||0}catch(e){return 0}}
+function bkQuando(){const t=ultimoBackup();if(!t)return 'mai';const g=Math.floor((Date.now()-t)/864e5);
+ return g<1?'oggi':g===1?'ieri':g+' giorni fa'}
+function nascondiBk(){const b=document.querySelector('.bkbar');if(b)b.remove()}
+function mostraBk(testo,sotto,tasto,azione){
+ nascondiBk();const b=document.createElement('div');b.className='bkbar';
+ b.innerHTML='<p>'+testo+'<span>'+sotto+'</span></p><button class="no">Dopo</button><button class="ok">'+tasto+'</button>';
+ b.querySelector('.no').onclick=()=>{bkRimandato=true;nascondiBk()};
+ b.querySelector('.ok').onclick=azione;document.body.appendChild(b)}
+async function scegliCartella(){
+ try{const h=await window.showDirectoryPicker({id:'sb-backup',mode:'readwrite'});
+  BKDIR=h;await cfgSet('bkdir',h);render();await backupAuto(true)}
+ catch(e){if(e&&e.name!=='AbortError')toast('Cartella non disponibile')}}
+async function spegniAuto(){BKDIR=null;await cfgSet('bkdir',undefined);nascondiBk();render();toast('Backup automatico disattivato')}
+async function scriviInCartella(){
+ const n=new Date(),z=x=>String(x).padStart(2,'0');
+ const nome='second-brain-auto-'+today()+'-'+z(n.getHours())+z(n.getMinutes())+'.json';
+ const f=await BKDIR.getFileHandle(nome,{create:true});const w=await f.createWritable();
+ await w.write(await creaBackup());await w.close();
+ // tiene solo le ultime copie automatiche; i backup fatti a mano non vengono toccati
+ const auto=[];for await(const [k,v] of BKDIR.entries())if(v.kind==='file'&&k.startsWith('second-brain-auto-'))auto.push(k);
+ auto.sort();for(const k of auto.slice(0,Math.max(0,auto.length-BK_COPIE)))await BKDIR.removeEntry(k)}
+async function backupAuto(daUtente){
+ if(bkInCorso||!D.length)return;
+ if(!FSA){ // telefono: promemoria con un tocco
+  const t=ultimoBackup();
+  if(!bkRimandato&&(!t||Date.now()-t>BK_GIORNI*864e5))
+   mostraBk(t?'Ultimo backup '+bkQuando():'Non hai ancora fatto un backup','Un tocco e lo salvi nella cartella Download','Esporta',esporta);
+  return}
+ if(!BKDIR)return;
+ bkInCorso=true;
+ try{
+  let p=await BKDIR.queryPermission({mode:'readwrite'});
+  if(p!=='granted'&&daUtente)p=await BKDIR.requestPermission({mode:'readwrite'});
+  if(p!=='granted'){
+   if(!bkRimandato)mostraBk('Backup automatico in pausa','Chrome chiede di nuovo il permesso per la cartella','Riattiva',()=>{nascondiBk();backupAuto(true)});
+   return}
+  await scriviInCartella();segnaBackup();nascondiBk();
+  if(daUtente)toast('Backup salvato in '+BKDIR.name);
+  if(tab==='imp')render();
+ }catch(e){toast('Backup automatico non riuscito');console.error(e)}
+ finally{bkInCorso=false}}
 async function importa(el){
  const f=el.files[0];el.value='';if(!f)return;
  try{const j=JSON.parse(await f.text());
@@ -902,6 +967,11 @@ async function boot(){
  daIndirizzo();
  if(location.search)history.replaceState({},'',location.pathname);
  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+ if(FSA){try{BKDIR=(await cfgGet('bkdir'))||null}catch(e){BKDIR=null}}
+ if(tab==='imp')render();
+ backupAuto(false);
+ // se l'app resta aperta per giorni: un backup al giorno
+ setInterval(()=>{if(Date.now()-ultimoBackup()>864e5)backupAuto(false)},36e5);
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!$('sheet').classList.contains('open'))checkPending()});
 boot();

@@ -1,4 +1,4 @@
-const CACHE = 'sb-shell-v16';
+const CACHE = 'sb-shell-v17';
 const SHELL = ['./', './index.html'];
 
 self.addEventListener('install', e => {
